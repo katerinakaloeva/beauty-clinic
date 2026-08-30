@@ -1,0 +1,99 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #faf7f8;
+    color: #222;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+}
+
+.app-card {
+    width: 430px;
+    min-height: 650px;
+    background: white;
+    border: 1px solid #e6e6e6;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 27px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #df4778;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 14px 15px;
+    border: 1px solid #dedede;
+    border-radius: 14px;
+    background: white;
+    font-size: 15px;
+    outline: none;
+}
+
+select:focus,
+input:focus {
+    border-color: #df4778;
+    box-shadow: 0 0 0 3px rgba(223, 71, 120, 0.1);
+}
+
+.submit-btn {
+    width: 100%;
+    border: none;
+    background: #df4778;
+    color: white;
+    padding: 15px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: #c83d6b;
+}
+
+.error-message {
+    margin: 7px 0 0;
+    color: #c62828;
+    font-size: 13px;
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="el" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Νέο Ραντεβού</title>
+
+    <link rel="stylesheet" th:href="@{/css/appointment-form.css}">
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <div class="app-card">
+
+        <div class="header">
+            <a class="back-link"
+               th:href="@{/appointments}">
+                ←
+            </a>
+
+            <h1>Νέο ραντεβού</h1>
+        </div>
+
+
+        <form th:action="@{/appointments}"
+              th:object="${appointment}"
+              method="post">
+
+            <div class="form-group">
+
+                <label for="treatmentId">
+                    Υπηρεσία
+                </label>
+
+                <select id="treatmentId"
+                        th:field="*{treatmentId}">
+
+                    <option value="">
+                        Επιλέξτε θεραπεία
+                    </option>
+
+                    <option th:each="treatment : ${treatments}"
+                            th:value="${treatment.id}"
+                            th:text="${treatment.name}">
+                    </option>
+
+                </select>
+
+                <p class="error-message"
+                   th:if="${#fields.hasErrors('treatmentId')}"
+                   th:errors="*{treatmentId}">
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="appointmentDate">
+                    Ημερομηνία
+                </label>
+
+                <input id="appointmentDate"
+                       type="date"
+                       th:field="*{appointmentDate}">
+
+                <p class="error-message"
+                   th:if="${#fields.hasErrors('appointmentDate')}"
+                   th:errors="*{appointmentDate}">
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="startTime">
+                    Ώρα έναρξης
+                </label>
+
+                <input id="startTime"
+                       type="time"
+                       th:field="*{startTime}">
+
+                <p class="error-message"
+                   th:if="${#fields.hasErrors('startTime')}"
+                   th:errors="*{startTime}">
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="endTime">
+                    Ώρα λήξης
+                </label>
+
+                <input id="endTime"
+                       type="time"
+                       th:field="*{endTime}">
+
+                <p class="error-message"
+                   th:if="${#fields.hasErrors('endTime')}"
+                   th:errors="*{endTime}">
+                </p>
+
+            </div>
+
+
+            <button class="submit-btn"
+                    type="submit">
+                Κλείσιμο ραντεβού
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

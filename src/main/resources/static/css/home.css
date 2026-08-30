@@ -1,0 +1,147 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #faf7f8;
+    color: #222;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+}
+
+.app-card {
+    width: 430px;
+    min-height: 750px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 1px solid #e6e6e6;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.top-section {
+    margin-bottom: 30px;
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.small-title {
+    margin: 0;
+    color: #888;
+    font-size: 14px;
+}
+
+h1 {
+    margin: 5px 0 10px;
+    font-size: 28px;
+}
+
+.welcome-text {
+    margin: 0;
+    color: #666;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.logout-btn {
+    padding: 9px 11px;
+    border: 1px solid #f0c4d0;
+    border-radius: 10px;
+    background: #fff7f9;
+    color: #c83d6b;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    background: #fde1e7;
+}
+
+.home-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.home-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 18px;
+    border: 1px solid #e5e5e5;
+    border-radius: 18px;
+    background: white;
+}
+
+.home-card-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: #fde1e7;
+    color: #df4778;
+    font-size: 21px;
+}
+
+.home-card h2 {
+    margin: 1px 0 8px;
+    font-size: 18px;
+}
+
+.home-card p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.info-message {
+    margin-top: 24px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #fff6f8;
+    color: #9a5c6e;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.bottom-navigation {
+    display: flex;
+    justify-content: space-around;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #888;
+    font-size: 13px;
+}
+
+.nav-item.active {
+    color: #df4778;
+}

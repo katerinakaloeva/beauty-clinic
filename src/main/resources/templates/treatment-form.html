@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Treatment</title>
+</head>
+<body>
+
+<h1>Add Treatment</h1>
+
+<form th:action="@{/treatments}"
+      th:object="${treatment}"
+      method="post">
+    <input type="hidden" th:field="*{id}">
+
+    <div>
+        <label>Name:</label>
+        <input type="text" th:field="*{name}">
+
+        <p th:if="${#fields.hasErrors('name')}"
+           th:errors="*{name}">
+        </p>
+    </div>
+
+    <div>
+        <label>Duration (minutes):</label>
+        <input type="number" th:field="*{durationMinutes}">
+
+        <p th:if="${#fields.hasErrors('durationMinutes')}"
+           th:errors="*{durationMinutes}">
+        </p>
+    </div>
+
+    <div>
+        <label>Price:</label>
+        <input type="number"
+               step="0.01"
+               th:field="*{price}">
+
+        <p th:if="${#fields.hasErrors('price')}"
+           th:errors="*{price}">
+        </p>
+    </div>
+
+    <div>
+        <label>Active:</label>
+        <input type="checkbox" th:field="*{active}">
+    </div>
+
+    <button type="submit">Save Treatment</button>
+
+</form>
+
+<br>
+
+<a th:href="@{/treatments}">Back to Treatments</a>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Treatments</title>
+</head>
+<body>
+
+<h1>Treatments</h1>
+
+<a th:href="@{/treatments/new}">
+    Create New Treatment
+</a>
+
+<br><br>
+
+<table border="1">
+
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Duration</th>
+        <th>Price</th>
+        <th>Active</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:each="treatment : ${treatments}">
+
+        <td th:text="${treatment.name}"></td>
+
+        <td th:text="${treatment.durationMinutes}"></td>
+
+        <td th:text="${treatment.price}"></td>
+
+        <td th:text="${treatment.active}"></td>
+
+        <td>
+
+            <a th:href="@{/treatments/{id}/edit(id=${treatment.id})}">
+                Edit
+            </a>
+
+            <form th:action="@{/treatments/{id}/delete(id=${treatment.id})}"
+                  method="post">
+
+                <button type="submit">
+                    Delete
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+</body>
+</html>

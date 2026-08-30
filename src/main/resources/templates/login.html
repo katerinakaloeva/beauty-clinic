@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="el" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σύνδεση | Beauty Clinic</title>
+
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <main class="app-card">
+
+        <section class="top-section">
+            <p class="small-title">Beauty Clinic</p>
+            <h1>Σύνδεση</h1>
+
+            <p class="intro-text">
+                Συνδέσου για να διαχειριστείς τα ραντεβού σου.
+            </p>
+        </section>
+
+        <div class="success-message" th:if="${param.registered}">
+            Η εγγραφή ολοκληρώθηκε. Μπορείς τώρα να συνδεθείς.
+        </div>
+
+        <div class="success-message" th:if="${param.logout}">
+            Έγινε επιτυχής αποσύνδεση.
+        </div>
+
+        <div class="error-message global-error" th:if="${param.error}">
+            Το email ή ο κωδικός πρόσβασης δεν είναι σωστά.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+
+<!--προστατεύει το POST login request από κακόβουλα requests-->
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input id="email"
+                       name="email"
+                       type="email"
+                       placeholder="name@example.com"
+                       autocomplete="email"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Κωδικός πρόσβασης</label>
+
+                <input id="password"
+                       name="password"
+                       type="password"
+                       placeholder="Ο κωδικός σου"
+                       autocomplete="current-password"
+                       required>
+            </div>
+
+            <button class="submit-btn" type="submit">
+                Σύνδεση
+            </button>
+        </form>
+
+        <p class="register-text">
+            Δεν έχεις λογαριασμό;
+            <a th:href="@{/register}">Δημιούργησε έναν</a>
+        </p>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="el" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Αρχική | Beauty Clinic</title>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <main class="app-card">
+
+        <section class="top-section">
+            <div class="top-header">
+                <div>
+                    <p class="small-title">Beauty Clinic</p>
+                    <h1>Καλώς ήρθες</h1>
+                </div>
+
+                <form th:action="@{/logout}" method="post">
+                    <!-- CSRF token: προστατεύει το POST logout request -->
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+                    <button class="logout-btn" type="submit">
+                        Αποσύνδεση
+                    </button>
+                </form>
+            </div>
+
+            <p class="welcome-text">
+                Οργάνωσε εύκολα τα ραντεβού ομορφιάς σου.
+            </p>
+        </section>
+
+        <section class="home-options">
+
+            <article class="home-card">
+                <div class="home-card-icon">◷</div>
+
+                <div>
+                    <h2>Διαθεσιμότητα</h2>
+                    <p>
+                        Δες τις διαθέσιμες ημέρες και ώρες για το επόμενο
+                        ραντεβού σου.
+                    </p>
+                </div>
+            </article>
+
+            <article class="home-card">
+                <div class="home-card-icon">▣</div>
+
+                <div>
+                    <h2>Τα ραντεβού μου</h2>
+                    <p>
+                        Παρακολούθησε ή ακύρωσε ένα μελλοντικό ραντεβού.
+                    </p>
+                </div>
+            </article>
+
+        </section>
+
+        <div class="info-message">
+            Οι λειτουργίες κρατήσεων θα είναι διαθέσιμες σύντομα.
+        </div>
+
+        <nav class="bottom-navigation">
+            <div class="nav-item active">
+                <span>⌂</span>
+                <span>Αρχική</span>
+            </div>
+
+            <div class="nav-item">
+                <span>▣</span>
+                <span>Ραντεβού</span>
+            </div>
+
+            <div class="nav-item">
+                <span>♙</span>
+                <span>Προφίλ</span>
+            </div>
+        </nav>
+
+    </main>
+
+</div>
+
+</body>
+</html>

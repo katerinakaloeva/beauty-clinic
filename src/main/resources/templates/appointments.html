@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="el" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Τα ραντεβού μου</title>
+
+    <link rel="stylesheet" th:href="@{/css/appointments.css}">
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <div class="app-card">
+
+        <div class="top-section">
+            <div>
+                <p class="small-title">Beauty Clinic</p>
+                <h1>Τα ραντεβού μου</h1>
+            </div>
+
+            <a class="new-appointment-btn"
+               th:href="@{/appointments/new}">
+                + Νέο ραντεβού
+            </a>
+        </div>
+
+
+        <div class="appointments-list">
+
+            <div class="appointment-card"
+                 th:each="appointment : ${appointments}">
+
+                <div class="appointment-top">
+
+                    <div>
+                        <h2 th:text="${appointment.treatmentName}">
+                            Θεραπεία
+                        </h2>
+
+                        <div class="appointment-date">
+                            <span>📅</span>
+
+                            <span th:text="${appointment.appointmentDate}">
+                                2026-08-24
+                            </span>
+
+                            <span>·</span>
+
+                            <span th:text="${appointment.startTime}">
+                                17:30
+                            </span>
+                        </div>
+
+                        <div class="appointment-time">
+                            <span th:text="${appointment.startTime}">
+                                17:30
+                            </span>
+
+                            <span>-</span>
+
+                            <span th:text="${appointment.endTime}">
+                                18:30
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <span class="status"
+                          th:classappend="${appointment.status.name() == 'CONFIRMED'} ? ' status-confirmed' :
+                                         (${appointment.status.name() == 'CANCELLED'} ? ' status-cancelled' :
+                                         (${appointment.status.name() == 'COMPLETED'} ? ' status-completed' :
+                                         ' status-no-show'))"
+                          th:text="${appointment.status}">
+                        CONFIRMED
+                    </span>
+
+                </div>
+
+
+                <div class="appointment-actions"
+                     th:if="${appointment.status.name() == 'CONFIRMED'}">
+
+                    <form th:action="@{/appointments/{id}/cancel(id=${appointment.id})}"
+                          method="post">
+                        <button class="action-btn cancel-btn"
+                                type="submit">
+                            Ακύρωση
+                        </button>
+                    </form>
+
+                    <form th:action="@{/appointments/{id}/complete(id=${appointment.id})}"
+                          method="post">
+                        <button class="action-btn complete-btn"
+                                type="submit">
+                            Ολοκλήρωση
+                        </button>
+                    </form>
+
+                    <form th:action="@{/appointments/{id}/no-show(id=${appointment.id})}"
+                          method="post">
+                        <button class="action-btn no-show-btn"
+                                type="submit">
+                            Δεν εμφανίστηκε
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="bottom-navigation">
+
+            <div class="nav-item">
+                <span>⌂</span>
+                <span>Αρχική</span>
+            </div>
+
+            <div class="nav-item active">
+                <span>▣</span>
+                <span>Ραντεβού</span>
+            </div>
+
+            <div class="nav-item">
+                <span>♙</span>
+                <span>Προφίλ</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
