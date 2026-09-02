@@ -30,6 +30,12 @@ public class TreatmentService {
                 .map(treatmentMapper::toReadDto)
                 .toList();
     }
+    public List<TreatmentReadDto>  getActiveTreatments(){
+        return treatmentRepository.findByActiveTrue()
+                .stream()
+                .map(treatmentMapper::toReadDto)
+                .toList();
+    }
 
     public void updateTreatment(Long id, TreatmentCreateDto dto) {
 

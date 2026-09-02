@@ -15,6 +15,9 @@ public class SecurityConfig {
 //                λεει για κάθε HTTP request, έλεγξε τους παρακάτω κανόνες
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register", "/login", "/css/**").permitAll()
+                        .requestMatchers("/bookings/**").hasRole("CUSTOMER")
+                        .requestMatchers("/my-bookings").hasRole("CUSTOMER")
+
                         .requestMatchers("/appointments/**", "/treatments/**")
                         .hasAnyRole("AESTHETICIAN", "ADMIN")
                         .requestMatchers("/home")

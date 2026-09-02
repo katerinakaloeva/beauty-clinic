@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="el" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Τα ραντεβού μου | Beauty Clinic</title>
+
+    <link rel="stylesheet" th:href="@{/css/customer-appointments.css}">
+</head>
+
+<body>
+
+<main class="page-wrapper">
+
+    <section class="appointments-card">
+
+        <a class="back-link" th:href="@{/home}">
+            ← Αρχική
+        </a>
+
+        <div class="page-heading">
+            <p class="eyebrow">Beauty Clinic</p>
+            <h1>Τα ραντεβού μου</h1>
+            <p>Δες όλα τα προγραμματισμένα ραντεβού σου.</p>
+        </div>
+
+        <div class="empty-state" th:if="${#lists.isEmpty(appointments)}">
+            <div class="empty-icon">♡</div>
+            <h2>Δεν έχεις ραντεβού ακόμη</h2>
+            <p>Διάλεξε μια θεραπεία και κλείσε το πρώτο σου ραντεβού.</p>
+
+            <a class="booking-btn" th:href="@{/bookings/new}">
+                Κλείσε ραντεβού
+            </a>
+        </div>
+
+        <div class="appointments-list" th:unless="${#lists.isEmpty(appointments)}">
+
+            <article class="appointment-item" th:each="appointment : ${appointments}">
+
+                <div class="appointment-icon">♡</div>
+
+                <div class="appointment-details">
+                    <p class="treatment-name" th:text="${appointment.treatmentName}">
+                        Θεραπεία προσώπου
+                    </p>
+
+                    <p class="appointment-date">
+                        <span th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}">
+                            10/09/2026
+                        </span>
+
+                        <span class="dot">•</span>
+
+                        <span th:text="${#temporals.format(appointment.startTime, 'HH:mm')}">
+                            10:00
+                        </span>
+
+                        <span>–</span>
+
+                        <span th:text="${#temporals.format(appointment.endTime, 'HH:mm')}">
+                            11:00
+                        </span>
+                    </p>
+                </div>
+
+                <span class="status-badge">
+
+                    <span th:if="${appointment.status.name() == 'CONFIRMED'}">
+                        Επιβεβαιωμένο
+                    </span>
+
+                    <span th:if="${appointment.status.name() == 'COMPLETED'}">
+                        Ολοκληρώθηκε
+                    </span>
+
+                    <span th:if="${appointment.status.name() == 'CANCELLED'}">
+                        Ακυρώθηκε
+                    </span>
+
+                    <span th:if="${appointment.status.name() == 'NO_SHOW'}">
+                        Δεν προσήλθες
+                    </span>
+
+                </span>
+
+            </article>
+
+        </div>
+
+        <a class="new-booking-link" th:href="@{/bookings/new}">
+            + Νέο ραντεβού
+        </a>
+
+    </section>
+
+</main>
+
+</body>
+</html>

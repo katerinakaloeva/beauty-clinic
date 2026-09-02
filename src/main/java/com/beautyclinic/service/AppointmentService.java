@@ -1,22 +1,24 @@
 package com.beautyclinic.service;
 
-import com.beautyclinic.core.exception.AppointmentConflictException;
-import com.beautyclinic.core.exception.AppointmentNotFoundException;
-import com.beautyclinic.core.exception.InactiveTreatmentException;
-import com.beautyclinic.core.exception.TreatmentNotFoundException;
+import com.beautyclinic.core.exception.*;
 import com.beautyclinic.dto.AppointmentCreateDto;
 import com.beautyclinic.dto.AppointmentReadDto;
-import com.beautyclinic.mapper.AppointmentMapper;
-import com.beautyclinic.model.Appointment;
+ import com.beautyclinic.mapper.AppointmentMapper;
+ import com.beautyclinic.model.Appointment;
 import com.beautyclinic.model.AppointmentStatus;
 import com.beautyclinic.model.Treatment;
 import com.beautyclinic.repository.AppointmentRepository;
 import com.beautyclinic.repository.TreatmentRepository;
+import com.beautyclinic.repository.UserAccountRepository;
 import com.beautyclinic.validator.AppointmentValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.beautyclinic.dto.CustomerBookingDto;
+import com.beautyclinic.model.Role;
+import com.beautyclinic.model.UserAccount;
+import java.time.LocalTime;
 
-import java.util.List;
+ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +28,13 @@ public class AppointmentService {
     private final TreatmentRepository treatmentRepository;
     private final AppointmentValidator appointmentValidator;
     private final AppointmentMapper appointmentMapper;
+     private final UserAccountRepository userAccountRepository;
 
     public Appointment createAppointment(AppointmentCreateDto dto) {
 
-        appointmentValidator.validate(dto);
+        appointmentValidator.validate(  dto.getAppointmentDate(),
+                dto.getStartTime(),
+                dto.getEndTime());
 
         Treatment treatment = treatmentRepository.findById(dto.getTreatmentId())
                 .orElseThrow(() ->
@@ -65,6 +70,79 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
+    public Appointment createCustomerBooking(
+            CustomerBookingDto dto,
+            String customerEmail){
+
+       Treatment treatment = treatmentRepository.findById(dto.getTreatmentId())
+               .orElseThrow(() ->
+                       new TreatmentNotFoundException("Treatment not found"));
+
+        if (!treatment.getActive()) {
+            throw new InactiveTreatmentException("Treatment is inactive");
+        }
+
+        LocalTime endTime = dto.getStartTime()
+                .plusMinutes(treatment.getDurationMinutes());
+
+        appointmentValidator.validate(dto.getAppointmentDate(), dto.getStartTime(), endTime);
+        UserAccount customer = userAccountRepository.findByEmail(customerEmail)
+                .orElseThrow(() ->
+                        new IllegalStateException("Logged-in customer not found"));
+
+        UserAccount aesthetician = userAccountRepository
+                .findFirstByRoleAndActiveTrue(Role.AESTHETICIAN)
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                "No active aesthetician available"
+                        )
+                );
+
+        List<Appointment> existingAppointments =
+                appointmentRepository.findByAppointmentDate(dto.getAppointmentDate());
+
+        for (Appointment existing : existingAppointments) {
+
+            if (existing.getStatus() == AppointmentStatus.CANCELLED) {
+                continue;
+            }
+
+            boolean overlaps =
+                    dto.getStartTime().isBefore(existing.getEndTime())
+                            && endTime.isAfter(existing.getStartTime());
+
+
+            if (overlaps) {
+                throw new AppointmentConflictException(
+                        "Appointment overlaps with an existing appointment"
+                );
+            }
+
+        }
+        Appointment appointment = appointmentMapper.toCustomerBookingEntity(
+                dto,
+                treatment,
+                customer,
+                aesthetician,
+                endTime
+        );
+        return appointmentRepository.save(appointment);
+
+    }
+
+
+    public List<AppointmentReadDto> getCustomerAppointments(String customerEmail) {
+      return  appointmentRepository
+              .findByCustomer_EmailOrderByAppointmentDateAscStartTimeAsc(customerEmail)
+               .stream()
+              .map(appointmentMapper::toReadDto)
+              .toList();
+
+
+    }
+
+
+
     public List<AppointmentReadDto> getAllAppointments() {
 
         return appointmentRepository.findAll()
@@ -89,6 +167,9 @@ public class AppointmentService {
 
         appointmentRepository.save(appointment);
     }
+
+
+
 
     public void completeAppointment(Long id) {
 
