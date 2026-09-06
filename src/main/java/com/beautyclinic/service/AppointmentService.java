@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.beautyclinic.dto.CustomerBookingDto;
 import com.beautyclinic.model.Role;
 import com.beautyclinic.model.UserAccount;
+
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
  import java.util.List;
@@ -38,10 +40,10 @@ public class AppointmentService {
 
         Treatment treatment = treatmentRepository.findById(dto.getTreatmentId())
                 .orElseThrow(() ->
-                        new TreatmentNotFoundException("Treatment not found"));
+                        new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         if (!treatment.getActive()) {
-            throw new InactiveTreatmentException("Treatment is inactive");
+            throw new InactiveTreatmentException("Η θεραπεία δεν είναι ενεργή");
         }
 
         List<Appointment> existingAppointments =
@@ -59,7 +61,7 @@ public class AppointmentService {
 
             if (overlaps) {
                 throw new AppointmentConflictException(
-                        "Appointment overlaps with an existing appointment"
+                        "Η ώρα που επιλέξατε δεν είναι διαθέσιμη"
                 );
             }
         }
@@ -76,10 +78,10 @@ public class AppointmentService {
 
        Treatment treatment = treatmentRepository.findById(dto.getTreatmentId())
                .orElseThrow(() ->
-                       new TreatmentNotFoundException("Treatment not found"));
+                       new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         if (!treatment.getActive()) {
-            throw new InactiveTreatmentException("Treatment is inactive");
+            throw new InactiveTreatmentException("Η θεραπεία δεν είναι ενεργή");
         }
 
         LocalTime endTime = dto.getStartTime()
@@ -88,13 +90,13 @@ public class AppointmentService {
         appointmentValidator.validate(dto.getAppointmentDate(), dto.getStartTime(), endTime);
         UserAccount customer = userAccountRepository.findByEmail(customerEmail)
                 .orElseThrow(() ->
-                        new IllegalStateException("Logged-in customer not found"));
+                        new IllegalStateException("Ο συνδεδεμένος πελάτης δεν βρέθηκε"));
 
         UserAccount aesthetician = userAccountRepository
                 .findFirstByRoleAndActiveTrue(Role.AESTHETICIAN)
                 .orElseThrow(() ->
                         new IllegalStateException(
-                                "No active aesthetician available"
+                                "Δεν υπάρχει διαθέσιμη ενεργή αισθητικός"
                         )
                 );
 
@@ -114,7 +116,7 @@ public class AppointmentService {
 
             if (overlaps) {
                 throw new AppointmentConflictException(
-                        "Appointment overlaps with an existing appointment"
+                        "Η ώρα που επιλέξατε δεν είναι διαθέσιμη"
                 );
             }
 
@@ -155,11 +157,11 @@ public class AppointmentService {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new AppointmentNotFoundException("Appointment not found"));
+                        new AppointmentNotFoundException("Το ραντεβού δεν βρέθηκε"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalStateException(
-                    "Only confirmed appointments can be cancelled"
+                    "Μπορούν να ακυρωθούν μόνο επιβεβαιωμένα ραντεβού"
             );
         }
 
@@ -175,11 +177,11 @@ public class AppointmentService {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new AppointmentNotFoundException("Appointment not found"));
+                        new AppointmentNotFoundException("Το ραντεβού δεν βρέθηκε"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalStateException(
-                    "Only confirmed appointments can be completed"
+                    "Μπορούν να ολοκληρωθούν μόνο επιβεβαιωμένα ραντεβού"
             );
         }
 
@@ -192,16 +194,25 @@ public class AppointmentService {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new AppointmentNotFoundException("Appointment not found"));
+                        new AppointmentNotFoundException("Το ραντεβού δεν βρέθηκε"));
 
         if (!appointment.getCustomer().getEmail().equals(customerEmail)) {
             throw new IllegalStateException(
-                    "You cannot cancel another customer's appointment"
+                    "Δεν μπορείτε να ακυρώσετε ραντεβού άλλου πελάτη"
             );
         }
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalStateException(
-                    "Only confirmed appointments can be cancelled"
+                    "Μπορούν να ακυρωθούν μόνο επιβεβαιωμένα ραντεβού"
+            );
+        }
+        LocalDateTime appointmentDateTime = LocalDateTime.of(
+                appointment.getAppointmentDate(),
+                appointment.getStartTime()
+        );
+        if (!appointmentDateTime.isAfter(LocalDateTime.now())) {
+            throw new IllegalStateException(
+                    "Δεν μπορείτε να ακυρώσετε ραντεβού του οποίου η ώρα έναρξης έχει περάσει"
             );
         }
         appointment.setStatus(AppointmentStatus.CANCELLED);
@@ -213,11 +224,11 @@ public class AppointmentService {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new AppointmentNotFoundException("Appointment not found"));
+                        new AppointmentNotFoundException("Το ραντεβού δεν βρέθηκε"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalStateException(
-                    "Only confirmed appointments can be marked as no-show"
+                    "Μόνο επιβεβαιωμένα ραντεβού μπορούν να σημειωθούν ως μη προσέλευση"
             );
         }
 

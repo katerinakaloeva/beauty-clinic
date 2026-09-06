@@ -41,7 +41,7 @@ public class TreatmentService {
 
         Treatment treatment = treatmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new TreatmentNotFoundException("Treatment not found"));
+                    new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         treatmentMapper.updateEntity(dto, treatment);
 
@@ -52,7 +52,7 @@ public class TreatmentService {
 
         Treatment treatment = treatmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new TreatmentNotFoundException("Treatment not found"));
+                    new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         return treatmentMapper.toReadDto(treatment);
     }
@@ -61,7 +61,7 @@ public class TreatmentService {
 
         Treatment treatment = treatmentRepository.findById(id)
                 .orElseThrow(() ->
-                        new TreatmentNotFoundException("Treatment not found"));
+                    new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         treatmentRepository.delete(treatment);
     }

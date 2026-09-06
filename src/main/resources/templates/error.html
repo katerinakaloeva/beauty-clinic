@@ -1,16 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="el" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σφάλμα | Beauty Clinic</title>
+
+    <link rel="stylesheet" th:href="@{/css/error.css}">
 </head>
+
 <body>
 
-<h1>Something went wrong</h1>
+<main class="page-wrapper">
 
-<p th:text="${errorMessage}"></p>
+    <section class="error-card">
+        <div class="error-icon" aria-hidden="true">!</div>
 
-<a th:href="@{/appointments}">Back to Appointments</a>
+        <p class="eyebrow">Beauty Clinic</p>
+        <h1>Κάτι δεν πήγε καλά</h1>
+        <p class="description">
+            Δεν ήταν δυνατό να ολοκληρωθεί η ενέργειά σου.
+        </p>
+
+        <div class="error-message" th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <a class="home-btn" th:href="@{/home}">
+            Επιστροφή στην αρχική
+        </a>
+    </section>
+
+</main>
 
 </body>
 </html>

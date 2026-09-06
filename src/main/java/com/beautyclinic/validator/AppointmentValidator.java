@@ -19,13 +19,13 @@ public class AppointmentValidator {
 
         if (appointmentDate.isBefore(LocalDate.now())) {
             throw new InvalidAppointmentTimeException(
-                    "Appointment date cannot be in the past"
+                    "Η ημερομηνία του ραντεβού δεν μπορεί να είναι στο παρελθόν"
             );
         }
 
         if (!startTime.isBefore(endTime)) {
             throw new InvalidAppointmentTimeException(
-                    "Start time must be before end time"
+                    "Η ώρα έναρξης πρέπει να είναι πριν από την ώρα λήξης"
             );
         }
 
@@ -33,13 +33,20 @@ public class AppointmentValidator {
                 || endTime.isAfter(closingTime)) {
 
             throw new InvalidAppointmentTimeException(
-                    "Appointment must be between 09:00 and 18:00"
+                    "Το ραντεβού πρέπει να είναι μεταξύ 09:00 και 18:00"
             );
         }
 
         if (startTime.getMinute() != 0) {
             throw new InvalidAppointmentTimeException(
                     "Η ώρα έναρξης πρέπει να είναι ακριβώς στην ώρα"
+            );
+        }
+        if (appointmentDate.isEqual(LocalDate.now())
+                && !startTime.isAfter(LocalTime.now())) {
+
+            throw new InvalidAppointmentTimeException(
+                    "Η ώρα του ραντεβού πρέπει να είναι στο μέλλον"
             );
         }
 
