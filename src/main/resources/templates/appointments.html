@@ -83,6 +83,10 @@
 
                     <form th:action="@{/appointments/{id}/cancel(id=${appointment.id})}"
                           method="post">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+
                         <button class="action-btn cancel-btn"
                                 type="submit">
                             Ακύρωση
@@ -91,6 +95,10 @@
 
                     <form th:action="@{/appointments/{id}/complete(id=${appointment.id})}"
                           method="post">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+
                         <button class="action-btn complete-btn"
                                 type="submit">
                             Ολοκλήρωση
@@ -99,6 +107,10 @@
 
                     <form th:action="@{/appointments/{id}/no-show(id=${appointment.id})}"
                           method="post">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+
                         <button class="action-btn no-show-btn"
                                 type="submit">
                             Δεν εμφανίστηκε
@@ -114,10 +126,10 @@
 
         <div class="bottom-navigation">
 
-            <div class="nav-item">
+            <a class="nav-item" th:href="@{/home}">
                 <span>⌂</span>
                 <span>Αρχική</span>
-            </div>
+            </a>
 
             <div class="nav-item active">
                 <span>▣</span>

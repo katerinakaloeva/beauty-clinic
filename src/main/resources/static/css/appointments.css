@@ -175,6 +175,7 @@ h1 {
     gap: 5px;
     color: #888;
     font-size: 13px;
+    text-decoration: none;
 }
 
 .nav-item.active {

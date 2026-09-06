@@ -39,7 +39,9 @@
 
         <section class="home-options">
 
-            <a class="home-card" th:href="@{/bookings/new}">
+            <a class="home-card"
+               th:unless="${isStaff}"
+               th:href="@{/bookings/new}">
                 <div class="home-card-icon">◷</div>
 
                 <div>
@@ -47,6 +49,19 @@
                     <p>
                         Δες τις διαθέσιμες ημέρες και ώρες για το επόμενο
                         ραντεβού σου.
+                    </p>
+                </div>
+            </a>
+
+            <a class="home-card"
+               th:if="${isStaff}"
+               th:href="@{/appointments/new}">
+                <div class="home-card-icon">+</div>
+
+                <div>
+                    <h2>Νέο ραντεβού</h2>
+                    <p>
+                        Δημιούργησε ένα νέο ραντεβού για πελάτη.
                     </p>
                 </div>
             </a>
