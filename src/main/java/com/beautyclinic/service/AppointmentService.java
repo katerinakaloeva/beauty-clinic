@@ -188,7 +188,28 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
-    public void markNoShow(Long id) {
+    public void cancelCustomerAppointment(Long id, String customerEmail) {
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new AppointmentNotFoundException("Appointment not found"));
+
+        if (!appointment.getCustomer().getEmail().equals(customerEmail)) {
+            throw new IllegalStateException(
+                    "You cannot cancel another customer's appointment"
+            );
+        }
+        if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
+            throw new IllegalStateException(
+                    "Only confirmed appointments can be cancelled"
+            );
+        }
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+
+        appointmentRepository.save(appointment);
+    }
+
+        public void markNoShow(Long id) {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->

@@ -80,7 +80,7 @@
         </section>
 
         <div class="info-message">
-            Η παρακολούθηση των ραντεβού σου θα είναι διαθέσιμη σύντομα.
+            Μπορείς να παρακολουθείς και να ακυρώνεις τα μελλοντικά ραντεβού σου.
         </div>
 
         <nav class="bottom-navigation">
@@ -96,10 +96,12 @@
                 <span>Ραντεβού</span>
             </a>
 
-            <div class="nav-item" th:unless="${isStaff}">
+            <a class="nav-item"
+               th:unless="${isStaff}"
+               th:href="@{/my-bookings}">
                 <span>▣</span>
                 <span>Ραντεβού</span>
-            </div>
+            </a>
 
             <div class="nav-item">
                 <span>♙</span>
