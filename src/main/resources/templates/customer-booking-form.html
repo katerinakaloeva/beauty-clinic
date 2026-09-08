@@ -69,17 +69,12 @@
             <div class="form-group">
                 <label for="startTime">Ώρα έναρξης</label>
 
-                <select id="startTime" th:field="*{startTime}">
-                    <option value="">Επίλεξε ώρα</option>
-                    <option value="09:00">09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="12:00">12:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
+                <select id="startTime"
+                        th:field="*{startTime}"
+                        disabled>
+                    <option value="">
+                        Επίλεξε πρώτα υπηρεσία και ημερομηνία
+                    </option>
                 </select>
 
                 <p class="error-message"
@@ -91,8 +86,8 @@
             <div class="time-note">
                 <span class="time-note-icon">◷</span>
                 <p>
-                    Οι κρατήσεις ξεκινούν μόνο σε ακέραιη ώρα.
-                    Η διαθεσιμότητα επιβεβαιώνεται κατά την κράτηση.
+                    Οι διαθέσιμες ώρες υπολογίζονται αυτόματα,
+                    με βάση την υπηρεσία και την ημερομηνία που επέλεξες.
                 </p>
             </div>
 
@@ -103,6 +98,59 @@
 
     </main>
 </div>
+
+<script>
+    const treatmentSelect = document.getElementById("treatmentId");
+    const appointmentDateInput = document.getElementById("appointmentDate");
+    const startTimeSelect = document.getElementById("startTime");
+
+    async function loadAvailableTimes() {
+        const treatmentId = treatmentSelect.value;
+        const appointmentDate = appointmentDateInput.value;
+
+        startTimeSelect.innerHTML = "";
+        startTimeSelect.disabled = true;
+
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        startTimeSelect.appendChild(firstOption);
+
+        if (!treatmentId || !appointmentDate) {
+            firstOption.textContent =
+                "Επίλεξε πρώτα υπηρεσία και ημερομηνία";
+            return;
+        }
+
+        const response = await fetch(
+            `/bookings/available-times?treatmentId=${treatmentId}&appointmentDate=${appointmentDate}`
+        );
+
+        const availableTimes = await response.json();
+
+        if (availableTimes.length === 0) {
+            firstOption.textContent =
+                "Δεν υπάρχουν διαθέσιμες ώρες";
+            return;
+        }
+
+        firstOption.textContent = "Επίλεξε ώρα";
+
+        availableTimes.forEach(time => {
+            const option = document.createElement("option");
+            const formattedTime = time.substring(0, 5);
+
+            option.value = formattedTime;
+            option.textContent = formattedTime;
+
+            startTimeSelect.appendChild(option);
+        });
+
+        startTimeSelect.disabled = false;
+    }
+
+    treatmentSelect.addEventListener("change", loadAvailableTimes);
+    appointmentDateInput.addEventListener("change", loadAvailableTimes);
+</script>
 
 </body>
 </html>

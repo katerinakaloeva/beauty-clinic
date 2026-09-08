@@ -1,6 +1,6 @@
 package com.beautyclinic.core.exception;
 
-public class TreatmentNotFoundException extends RuntimeException {
+public class TreatmentNotFoundException extends AppException {
 
     public TreatmentNotFoundException(String message) {
         super(message);

@@ -12,17 +12,22 @@ import com.beautyclinic.repository.TreatmentRepository;
 import com.beautyclinic.repository.UserAccountRepository;
 import com.beautyclinic.validator.AppointmentValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.beautyclinic.dto.CustomerBookingDto;
 import com.beautyclinic.model.Role;
 import com.beautyclinic.model.UserAccount;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
- import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AppointmentService {
 
@@ -32,6 +37,7 @@ public class AppointmentService {
     private final AppointmentMapper appointmentMapper;
      private final UserAccountRepository userAccountRepository;
 
+    @Transactional
     public Appointment createAppointment(AppointmentCreateDto dto) {
 
         appointmentValidator.validate(  dto.getAppointmentDate(),
@@ -55,9 +61,10 @@ public class AppointmentService {
                 continue;
             }
 
-            boolean overlaps =
-                    dto.getStartTime().isBefore(existing.getEndTime())
-                            && dto.getEndTime().isAfter(existing.getStartTime());
+            boolean overlaps = existing.overlapsWith(
+                    dto.getStartTime(),
+                    dto.getEndTime()
+            );
 
             if (overlaps) {
                 throw new AppointmentConflictException(
@@ -69,9 +76,20 @@ public class AppointmentService {
         Appointment appointment =
                 appointmentMapper.toEntity(dto, treatment);
 
-        return appointmentRepository.save(appointment);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        log.info(
+                "Staff appointment created: appointmentId={}, treatmentId={}, date={}, startTime={}",
+                savedAppointment.getId(),
+                treatment.getId(),
+                dto.getAppointmentDate(),
+                dto.getStartTime()
+        );
+
+        return savedAppointment;
     }
 
+    @Transactional
     public Appointment createCustomerBooking(
             CustomerBookingDto dto,
             String customerEmail){
@@ -84,8 +102,7 @@ public class AppointmentService {
             throw new InactiveTreatmentException("Η θεραπεία δεν είναι ενεργή");
         }
 
-        LocalTime endTime = dto.getStartTime()
-                .plusMinutes(treatment.getDurationMinutes());
+        LocalTime endTime = treatment.calculateEndTime(dto.getStartTime());
 
         appointmentValidator.validate(dto.getAppointmentDate(), dto.getStartTime(), endTime);
         UserAccount customer = userAccountRepository.findByEmail(customerEmail)
@@ -109,9 +126,10 @@ public class AppointmentService {
                 continue;
             }
 
-            boolean overlaps =
-                    dto.getStartTime().isBefore(existing.getEndTime())
-                            && endTime.isAfter(existing.getStartTime());
+            boolean overlaps = existing.overlapsWith(
+                    dto.getStartTime(),
+                    endTime
+            );
 
 
             if (overlaps) {
@@ -128,11 +146,86 @@ public class AppointmentService {
                 aesthetician,
                 endTime
         );
-        return appointmentRepository.save(appointment);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        log.info(
+                "Customer booking created: appointmentId={}, customerId={}, treatmentId={}, date={}, startTime={}",
+                savedAppointment.getId(),
+                customer.getId(),
+                treatment.getId(),
+                dto.getAppointmentDate(),
+                dto.getStartTime()
+        );
+
+        return savedAppointment;
 
     }
 
+    @Transactional(readOnly = true)
+    public List<LocalTime> getAvailableStartTimes(
+            Long treatmentId,
+            LocalDate appointmentDate) {
 
+        Treatment treatment = treatmentRepository.findById(treatmentId)
+                .orElseThrow(() ->
+                        new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
+
+        if (!treatment.getActive()) {
+            throw new InactiveTreatmentException("Η θεραπεία δεν είναι ενεργή");
+        }
+
+        if (appointmentDate.isBefore(LocalDate.now())) {
+            return List.of();
+        }
+
+        LocalTime openingTime = LocalTime.of(9, 0);
+        LocalTime closingTime = LocalTime.of(18, 0);
+
+        List<Appointment> existingAppointments =
+                appointmentRepository.findByAppointmentDate(appointmentDate);
+
+        List<LocalTime> availableTimes = new ArrayList<>();
+
+        for (LocalTime startTime = openingTime;
+             startTime.isBefore(closingTime);
+             startTime = startTime.plusHours(1)) {
+
+            LocalTime endTime = startTime.plusMinutes(
+                    treatment.getDurationMinutes()
+            );
+
+             if (endTime.isAfter(closingTime)) {
+                continue;
+            }
+
+             if (appointmentDate.isEqual(LocalDate.now())
+                    && !startTime.isAfter(LocalTime.now())) {
+                continue;
+            }
+
+            boolean overlaps = false;
+
+            for (Appointment existing : existingAppointments) {
+                if (existing.getStatus() == AppointmentStatus.CANCELLED) {
+                    continue;
+                }
+
+                if (existing.overlapsWith(startTime, endTime)) {
+                    overlaps = true;
+                    break;
+                }
+            }
+
+            if (!overlaps) {
+                availableTimes.add(startTime);
+            }
+        }
+
+        return availableTimes;
+    }
+
+
+    @Transactional(readOnly = true)
     public List<AppointmentReadDto> getCustomerAppointments(String customerEmail) {
       return  appointmentRepository
               .findByCustomer_EmailOrderByAppointmentDateAscStartTimeAsc(customerEmail)
@@ -145,6 +238,7 @@ public class AppointmentService {
 
 
 
+    @Transactional(readOnly = true)
     public List<AppointmentReadDto> getAllAppointments() {
 
         return appointmentRepository.findAll()
@@ -153,6 +247,7 @@ public class AppointmentService {
                 .toList();
     }
 
+    @Transactional
     public void cancelAppointment(Long id) {
 
         Appointment appointment = appointmentRepository.findById(id)
@@ -168,11 +263,14 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.CANCELLED);
 
         appointmentRepository.save(appointment);
+
+        log.info("Appointment cancelled by staff: appointmentId={}", appointment.getId());
     }
 
 
 
 
+    @Transactional
     public void completeAppointment(Long id) {
 
         Appointment appointment = appointmentRepository.findById(id)
@@ -190,6 +288,7 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
     }
 
+    @Transactional
     public void cancelCustomerAppointment(Long id, String customerEmail) {
 
         Appointment appointment = appointmentRepository.findById(id)
@@ -218,9 +317,16 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.CANCELLED);
 
         appointmentRepository.save(appointment);
+
+        log.info(
+                "Appointment cancelled by customer: appointmentId={}, customerId={}",
+                appointment.getId(),
+                appointment.getCustomer().getId()
+        );
     }
 
-        public void markNoShow(Long id) {
+    @Transactional
+    public void markNoShow(Long id) {
 
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->

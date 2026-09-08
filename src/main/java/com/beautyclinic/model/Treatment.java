@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,4 +40,7 @@ public class Treatment {
     @OneToMany(mappedBy = "treatment")
     private List<Appointment> appointments = new ArrayList<>();
 
+    public LocalTime calculateEndTime(LocalTime startTime) {
+        return startTime.plusMinutes(durationMinutes);
+    }
 }

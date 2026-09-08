@@ -9,10 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,7 +40,8 @@ public class CustomerBookingController {
             @Valid @ModelAttribute("booking") CustomerBookingDto dto,
             BindingResult result,
             Authentication authentication,
-            Model model) {
+            Model model,
+     RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             model.addAttribute(
@@ -52,6 +55,10 @@ public class CustomerBookingController {
         appointmentService.createCustomerBooking(
                 dto,
                 authentication.getName()
+        );
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Το ραντεβού σου καταχωρίστηκε επιτυχώς."
         );
 
         return "redirect:/home";
@@ -73,6 +80,18 @@ public class CustomerBookingController {
                 authentication.getName()
         );
         return "redirect:/my-bookings";
+    }
+
+    @GetMapping("/bookings/available-times")
+    @ResponseBody
+    public List<LocalTime> getAvailableStartTimes(
+            @RequestParam Long treatmentId,
+            @RequestParam LocalDate appointmentDate) {
+
+        return appointmentService.getAvailableStartTimes(
+                treatmentId,
+                appointmentDate
+        );
     }
 
 }

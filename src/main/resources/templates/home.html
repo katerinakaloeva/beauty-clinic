@@ -35,6 +35,11 @@
             <p class="welcome-text">
                 Οργάνωσε εύκολα τα ραντεβού ομορφιάς σου.
             </p>
+
+            <p class="success-message"
+               th:if="${successMessage}"
+               th:text="${successMessage}">
+            </p>
         </section>
 
         <section class="home-options">

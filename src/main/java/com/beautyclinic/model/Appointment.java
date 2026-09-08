@@ -43,4 +43,12 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentStatus status;
+
+    public boolean overlapsWith(
+            LocalTime requestedStartTime,
+            LocalTime requestedEndTime) {
+
+        return requestedStartTime.isBefore(endTime)
+                && requestedEndTime.isAfter(startTime);
+    }
 }
