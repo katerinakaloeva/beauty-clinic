@@ -16,6 +16,7 @@ server-rendered MVC pages to a REST API with a Vanilla JavaScript frontend.
 
 - Public treatment catalogue loaded from a REST API
 - Customer booking flow with available appointment times
+- Customer appointment page with status display and cancellation
 - `CUSTOMER`, `AESTHETICIAN`, and `ADMIN` roles
 - Customer-only booking page and booking API
 - CSRF protection for both Thymeleaf forms and JavaScript `fetch` requests
@@ -43,13 +44,15 @@ JavaScript frontend, which can later be replaced without changing the API.
 - `GET /api/treatments/{id}`
 - `GET /api/bookings/available-times` — `CUSTOMER`
 - `POST /api/bookings` — `CUSTOMER`
+- `GET /api/bookings/my` — `CUSTOMER`
+- `PATCH /api/bookings/{id}/cancel` — `CUSTOMER`
 
 ## Next steps
 
-- Add an isolated test profile before running the full test suite
+- Expand automated test coverage using the isolated test profile
 - Add unit tests for validation and appointment rules
 - Add REST API integration tests for security and error handling
-- Build customer appointment management and staff REST features
+- Build staff REST features for appointments and treatment management
 
 ## Run locally
 

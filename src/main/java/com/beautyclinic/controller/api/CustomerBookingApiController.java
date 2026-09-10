@@ -32,6 +32,15 @@ public class CustomerBookingApiController {
         );
     }
 
+    @GetMapping("/my")
+    public List<AppointmentReadDto> getMyBookings(
+            Authentication authentication
+    ) {
+        return appointmentService.getCustomerAppointments(
+                authentication.getName()
+        );
+    }
+
     @PostMapping
     public ResponseEntity<AppointmentReadDto> createCustomerBooking(
             @Valid @RequestBody CustomerBookingDto dto,
@@ -46,5 +55,18 @@ public class CustomerBookingApiController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdBooking);
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelMyBooking(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        appointmentService.cancelCustomerAppointment(
+                id,
+                authentication.getName()
+        );
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/api/treatments/**"
                         ).permitAll()
                         .requestMatchers("/booking.html").hasRole("CUSTOMER")
+                        .requestMatchers("/my-bookings.html").hasRole("CUSTOMER")
                         .requestMatchers("/api/bookings/**").hasRole("CUSTOMER")
                         .requestMatchers("/bookings/**").hasRole("CUSTOMER")
                         .requestMatchers("/my-bookings/**").hasRole("CUSTOMER")
