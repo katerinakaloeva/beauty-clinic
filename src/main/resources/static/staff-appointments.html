@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Διαχείριση ραντεβού | Beauty Clinic</title>
+
+    <link rel="stylesheet" href="/css/staff-appointments.css">
+    <script src="/js/staff-appointments.js" defer></script>
+</head>
+
+<body>
+
+<main class="page-shell">
+    <a class="back-link" href="/home">← Πίσω στην αρχική</a>
+
+    <section class="appointments-card" aria-labelledby="appointments-title">
+        <div class="title-row">
+            <div>
+                <p class="eyebrow">Beauty Clinic · Staff</p>
+                <h1 id="appointments-title">Διαχείριση ραντεβού</h1>
+            </div>
+            <span class="staff-badge">Πρόγραμμα</span>
+        </div>
+
+        <p class="intro">
+            Δες όλα τα ραντεβού και την τρέχουσα κατάστασή τους.
+        </p>
+
+        <p id="loading-message" class="status-message" aria-live="polite">
+            Φόρτωση ραντεβού...
+        </p>
+
+        <p id="error-message" class="status-message is-error" aria-live="polite" hidden></p>
+
+        <section id="empty-state" class="empty-state" hidden>
+            <div class="empty-icon" aria-hidden="true">◌</div>
+            <h2>Δεν υπάρχουν ραντεβού</h2>
+            <p>Όταν προστεθεί ένα ραντεβού, θα εμφανιστεί εδώ.</p>
+        </section>
+
+        <div id="appointments" class="appointments-list" aria-live="polite"></div>
+    </section>
+</main>
+
+</body>
+</html>

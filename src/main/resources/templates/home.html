@@ -73,13 +73,13 @@
 
             <a class="home-card"
                th:if="${isStaff}"
-               th:href="@{/appointments}">
+               th:href="@{/staff-appointments.html}">
                 <div class="home-card-icon">▣</div>
 
                 <div>
-                    <h2>Τα ραντεβού μου</h2>
+                    <h2>Όλα τα ραντεβού</h2>
                     <p>
-                        Παρακολούθησε ή ακύρωσε ένα μελλοντικό ραντεβού.
+                        Δες το πρόγραμμα και την κατάσταση όλων των ραντεβού.
                     </p>
                 </div>
             </a>
@@ -99,7 +99,11 @@
 
         </section>
 
-        <div class="info-message">
+        <div class="info-message" th:if="${isStaff}">
+            Δες το πρόγραμμα και την κατάσταση όλων των ραντεβού.
+        </div>
+
+        <div class="info-message" th:unless="${isStaff}">
             Μπορείς να παρακολουθείς και να ακυρώνεις τα μελλοντικά ραντεβού σου.
         </div>
 
@@ -111,7 +115,7 @@
 
             <a class="nav-item"
                th:if="${isStaff}"
-               th:href="@{/appointments}">
+               th:href="@{/staff-appointments.html}">
                 <span>▣</span>
                 <span>Ραντεβού</span>
             </a>
