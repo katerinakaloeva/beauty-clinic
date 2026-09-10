@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Clinic | Θεραπείες</title>
+
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/treatments.js" defer></script>
+</head>
+
+<body>
+
+<main class="page-shell">
+    <section class="hero">
+        <p class="eyebrow">Beauty Clinic</p>
+        <h1>Οι θεραπείες μας</h1>
+        <p class="intro">
+            Ανακάλυψε τις διαθέσιμες υπηρεσίες και διάλεξε εκείνη που σου ταιριάζει.
+        </p>
+        <a class="booking-link" href="/booking.html">
+            Κλείσε ραντεβού
+        </a>
+    </section>
+
+    <section class="treatments-section" aria-labelledby="treatments-heading">
+        <div class="section-heading">
+            <div>
+                <p class="section-label">Κατάλογος</p>
+                <h2 id="treatments-heading">Διαθέσιμες θεραπείες</h2>
+            </div>
+            <span class="live-indicator">● Δεδομένα από API</span>
+        </div>
+
+        <p id="loading-message" class="status-message">
+            Φόρτωση θεραπειών...
+        </p>
+
+        <p id="error-message" class="status-message error-message" hidden>
+        </p>
+
+        <div id="treatments" class="treatments-grid"></div>
+    </section>
+</main>
+
+</body>
+</html>

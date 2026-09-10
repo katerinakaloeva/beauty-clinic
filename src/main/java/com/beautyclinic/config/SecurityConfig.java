@@ -1,9 +1,20 @@
 package com.beautyclinic.config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.util.StringUtils;
+
+import java.util.function.Supplier;
 
 @Configuration
 public class SecurityConfig {
@@ -12,9 +23,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http
-//                λεει για κάθε HTTP request, έλεγξε τους παρακάτω κανόνες
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(
+                                CookieCsrfTokenRepository.withHttpOnlyFalse()
+                        )
+                        .csrfTokenRequestHandler(
+                                new SpaCsrfTokenRequestHandler()
+                        )
+                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/register", "/login", "/css/**").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/register",
+                                "/login",
+                                "/css/**",
+                                "/js/**"
+                        ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/treatments",
+                                "/api/treatments/**"
+                        ).permitAll()
+                        .requestMatchers("/booking.html").hasRole("CUSTOMER")
+                        .requestMatchers("/api/bookings/**").hasRole("CUSTOMER")
                         .requestMatchers("/bookings/**").hasRole("CUSTOMER")
                         .requestMatchers("/my-bookings/**").hasRole("CUSTOMER")
                         .requestMatchers("/appointments/**", "/treatments/**")
@@ -37,5 +69,40 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .build();
+    }
+
+    private static final class SpaCsrfTokenRequestHandler
+            implements CsrfTokenRequestHandler {
+
+        private final CsrfTokenRequestHandler plainTokenHandler =
+                new CsrfTokenRequestAttributeHandler();
+
+        private final CsrfTokenRequestHandler xorTokenHandler =
+                new XorCsrfTokenRequestAttributeHandler();
+
+        @Override
+        public void handle(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                Supplier<CsrfToken> csrfToken
+        ) {
+            xorTokenHandler.handle(request, response, csrfToken);
+            csrfToken.get();
+        }
+
+        @Override
+        public String resolveCsrfTokenValue(
+                HttpServletRequest request,
+                CsrfToken csrfToken
+        ) {
+            String headerValue = request.getHeader(csrfToken.getHeaderName());
+
+            CsrfTokenRequestHandler tokenHandler =
+                    StringUtils.hasText(headerValue)
+                            ? plainTokenHandler
+                            : xorTokenHandler;
+
+            return tokenHandler.resolveCsrfTokenValue(request, csrfToken);
+        }
     }
 }
