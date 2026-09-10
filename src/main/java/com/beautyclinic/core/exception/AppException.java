@@ -1,8 +1,14 @@
 package com.beautyclinic.core.exception;
 
+import lombok.Getter;
+
+@Getter
 public class AppException extends RuntimeException {
 
-    public AppException(String message) {
+    private final String code;
+
+    public AppException(String code, String message) {
         super(message);
+        this.code = code;
     }
 }

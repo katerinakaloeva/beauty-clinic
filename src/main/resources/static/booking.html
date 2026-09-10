@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Νέα κράτηση | Beauty Clinic</title>
+
+    <link rel="stylesheet" href="/css/booking.css">
+    <script src="/js/booking.js" defer></script>
+</head>
+
+<body>
+
+<main class="page-shell">
+    <a class="back-link" href="/">← Πίσω στις θεραπείες</a>
+
+    <section class="booking-card" aria-labelledby="booking-title">
+        <p class="eyebrow">Beauty Clinic</p>
+        <h1 id="booking-title">Κλείσε το ραντεβού σου</h1>
+        <p class="intro">
+            Διάλεξε θεραπεία, ημερομηνία και μία διαθέσιμη ώρα.
+        </p>
+
+        <form id="booking-form">
+            <div class="form-field">
+                <label for="treatment-id">Θεραπεία</label>
+                <select id="treatment-id" name="treatmentId" required disabled>
+                    <option value="">Φόρτωση θεραπειών...</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="appointment-date">Ημερομηνία</label>
+                <input
+                        id="appointment-date"
+                        name="appointmentDate"
+                        type="date"
+                        required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="start-time">Ώρα έναρξης</label>
+                <select id="start-time" name="startTime" required disabled>
+                    <option value="">Επίλεξε θεραπεία και ημερομηνία</option>
+                </select>
+            </div>
+
+            <p id="form-message" class="form-message" aria-live="polite" hidden></p>
+
+            <button id="submit-booking" type="submit" disabled>
+                Επιβεβαίωση κράτησης
+            </button>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

@@ -90,7 +90,7 @@ public class AppointmentService {
     }
 
     @Transactional
-    public Appointment createCustomerBooking(
+    public AppointmentReadDto  createCustomerBooking(
             CustomerBookingDto dto,
             String customerEmail){
 
@@ -157,7 +157,7 @@ public class AppointmentService {
                 dto.getStartTime()
         );
 
-        return savedAppointment;
+        return appointmentMapper.toReadDto(savedAppointment);
 
     }
 

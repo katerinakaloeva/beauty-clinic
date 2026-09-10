@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Τα ραντεβού μου | Beauty Clinic</title>
+
+    <link rel="stylesheet" href="/css/my-bookings.css">
+    <script src="/js/my-bookings.js" defer></script>
+</head>
+
+<body>
+
+<main class="page-shell">
+    <a class="back-link" href="/">← Πίσω στις θεραπείες</a>
+
+    <section class="appointments-card" aria-labelledby="appointments-title">
+        <p class="eyebrow">Beauty Clinic</p>
+        <h1 id="appointments-title">Τα ραντεβού μου</h1>
+        <p class="intro">Δες την κατάσταση των ραντεβού σου ή ακύρωσε ένα μελλοντικό ραντεβού.</p>
+
+        <p id="loading-message" class="status-message" aria-live="polite">
+            Φόρτωση ραντεβού...
+        </p>
+
+        <p id="error-message" class="status-message is-error" aria-live="polite" hidden></p>
+
+        <section id="empty-state" class="empty-state" hidden>
+            <div class="empty-icon" aria-hidden="true">♡</div>
+            <h2>Δεν έχεις ραντεβού ακόμη</h2>
+            <p>Διάλεξε μία θεραπεία και κλείσε το πρώτο σου ραντεβού.</p>
+        </section>
+
+        <div id="appointments" class="appointments-list" aria-live="polite"></div>
+
+        <a class="new-booking-link" href="/booking.html">+ Νέο ραντεβού</a>
+    </section>
+</main>
+
+</body>
+</html>
