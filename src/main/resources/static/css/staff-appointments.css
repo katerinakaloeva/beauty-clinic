@@ -192,6 +192,42 @@ h1 {
     background: var(--warning-soft);
 }
 
+.status-and-actions {
+    display: grid;
+    justify-items: end;
+    gap: 10px;
+}
+
+.appointment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 7px;
+}
+
+.action-button {
+    padding: 8px 10px;
+    border: 1px solid #ef9ab2;
+    border-radius: 10px;
+    color: var(--primary-dark);
+    background: var(--surface);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.action-button:hover {
+    color: #ffffff;
+    background: var(--primary-dark);
+}
+
+.action-button:focus-visible {
+    outline: 3px solid rgba(220, 91, 131, 0.35);
+    outline-offset: 3px;
+}
+
 .empty-state {
     padding: 42px 24px;
     border: 1px dashed var(--border);
@@ -233,8 +269,12 @@ h1 {
         grid-template-columns: auto minmax(0, 1fr);
     }
 
-    .status-badge {
+    .status-and-actions {
         grid-column: 2;
-        justify-self: start;
+        justify-items: start;
+    }
+
+    .appointment-actions {
+        justify-content: start;
     }
 }
