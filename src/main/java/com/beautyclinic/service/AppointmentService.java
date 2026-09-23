@@ -3,6 +3,7 @@ package com.beautyclinic.service;
 import com.beautyclinic.core.exception.*;
 import com.beautyclinic.dto.AppointmentCreateDto;
 import com.beautyclinic.dto.AppointmentReadDto;
+import com.beautyclinic.dto.StaffAppointmentCreateDto;
  import com.beautyclinic.mapper.AppointmentMapper;
  import com.beautyclinic.model.Appointment;
 import com.beautyclinic.model.AppointmentStatus;
@@ -87,6 +88,69 @@ public class AppointmentService {
         );
 
         return savedAppointment;
+    }
+
+    @Transactional
+    public void createStaffAppointment(
+            StaffAppointmentCreateDto dto,
+            String aestheticianEmail) {
+
+        appointmentValidator.validate(
+                dto.getAppointmentDate(),
+                dto.getStartTime(),
+                dto.getEndTime()
+        );
+
+        Treatment treatment = treatmentRepository.findById(dto.getTreatmentId())
+                .orElseThrow(() ->
+                        new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
+
+        if (!treatment.getActive()) {
+            throw new InactiveTreatmentException("Η θεραπεία δεν είναι ενεργή");
+        }
+
+        UserAccount customer = userAccountRepository.findById(dto.getCustomerId())
+                .filter(user -> user.getRole() == Role.CUSTOMER && user.isActive())
+                .orElseThrow(() ->
+                        new IllegalStateException("Ο πελάτης δεν βρέθηκε ή δεν είναι ενεργός"));
+
+        UserAccount aesthetician = userAccountRepository.findByEmail(aestheticianEmail)
+                .orElseThrow(() ->
+                        new IllegalStateException("Ο συνδεδεμένος χρήστης δεν βρέθηκε"));
+
+        List<Appointment> existingAppointments =
+                appointmentRepository.findByAppointmentDate(dto.getAppointmentDate());
+
+        for (Appointment existing : existingAppointments) {
+            if (existing.getStatus() == AppointmentStatus.CANCELLED) {
+                continue;
+            }
+
+            if (existing.overlapsWith(dto.getStartTime(), dto.getEndTime())) {
+                throw new AppointmentConflictException(
+                        "Η ώρα που επιλέξατε δεν είναι διαθέσιμη"
+                );
+            }
+        }
+
+        Appointment appointment = appointmentMapper.toStaffAppointmentEntity(
+                dto,
+                treatment,
+                customer,
+                aesthetician
+        );
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        log.info(
+                "Staff appointment created: appointmentId={}, customerId={}, treatmentId={}, date={}, startTime={}",
+                savedAppointment.getId(),
+                customer.getId(),
+                treatment.getId(),
+                dto.getAppointmentDate(),
+                dto.getStartTime()
+        );
+
     }
 
     @Transactional

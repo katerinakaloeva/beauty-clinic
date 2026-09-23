@@ -32,6 +32,56 @@ function getStatusDetails(status) {
     return { label: status, className: "" };
 }
 
+function getCsrfToken() {
+    const cookies = document.cookie.split("; ");
+
+    for (const cookie of cookies) {
+        if (cookie.startsWith("XSRF-TOKEN=")) {
+            return cookie.substring("XSRF-TOKEN=".length);
+        }
+    }
+
+    return "";
+}
+
+function createActionButton(label, action, appointmentId) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "action-button";
+    button.textContent = label;
+
+    button.addEventListener("click", function () {
+        updateAppointmentStatus(appointmentId, action);
+    });
+
+    return button;
+}
+
+function createActionButtons(appointment) {
+    const actions = document.createElement("div");
+    actions.className = "appointment-actions";
+
+    const completeButton = createActionButton(
+        "Ολοκλήρωση",
+        "complete",
+        appointment.id
+    );
+    const cancelButton = createActionButton(
+        "Ακύρωση",
+        "cancel",
+        appointment.id
+    );
+    const noShowButton = createActionButton(
+        "Μη προσέλευση",
+        "no-show",
+        appointment.id
+    );
+
+    actions.append(completeButton, cancelButton, noShowButton);
+
+    return actions;
+}
+
 function createAppointmentCard(appointment) {
     const status = getStatusDetails(appointment.status);
 
@@ -64,12 +114,55 @@ function createAppointmentCard(appointment) {
     statusBadge.className = `status-badge ${status.className}`;
     statusBadge.textContent = status.label;
 
-    card.append(icon, details, statusBadge);
+    const statusAndActions = document.createElement("div");
+    statusAndActions.className = "status-and-actions";
+    statusAndActions.appendChild(statusBadge);
+
+    if (appointment.status === "CONFIRMED") {
+        const actionButtons = createActionButtons(appointment);
+        statusAndActions.appendChild(actionButtons);
+    }
+
+    card.append(icon, details, statusAndActions);
 
     return card;
 }
 
+async function updateAppointmentStatus(appointmentId, action) {
+    const shouldUpdate = window.confirm("Θέλεις να αλλάξεις την κατάσταση του ραντεβού;");
+
+    if (!shouldUpdate) {
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `/api/staff/appointments/${appointmentId}/${action}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "X-XSRF-TOKEN": getCsrfToken()
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Δεν ήταν δυνατή η ενημέρωση του ραντεβού.");
+        }
+
+        loadAppointments();
+    } catch (error) {
+        errorMessage.textContent = error.message;
+        errorMessage.hidden = false;
+    }
+}
+
 async function loadAppointments() {
+    loadingMessage.hidden = false;
+    errorMessage.hidden = true;
+    emptyState.hidden = true;
+    appointmentsContainer.textContent = "";
+
     try {
         const response = await fetch("/api/staff/appointments");
 
@@ -85,8 +178,6 @@ async function loadAppointments() {
             emptyState.hidden = false;
             return;
         }
-
-        appointmentsContainer.textContent = "";
 
         for (const appointment of appointments) {
             const card = createAppointmentCard(appointment);

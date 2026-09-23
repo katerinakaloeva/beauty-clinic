@@ -4,6 +4,7 @@ import com.beautyclinic.model.Role;
 import com.beautyclinic.model.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserAccountRepository
@@ -11,4 +12,6 @@ public interface UserAccountRepository
 
     Optional<UserAccount> findByEmail(String email);
     Optional<UserAccount> findFirstByRoleAndActiveTrue(Role role);
+
+    List<UserAccount> findByRoleAndActiveTrueOrderByFullNameAsc(Role role);
 }

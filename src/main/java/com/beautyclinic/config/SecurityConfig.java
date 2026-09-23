@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .requestMatchers("/my-bookings/**").hasRole("CUSTOMER")
                         .requestMatchers("/staff-appointments.html")
                         .hasAnyRole("AESTHETICIAN", "ADMIN")
+                        .requestMatchers("/staff-appointment-form.html")
+                        .hasAnyRole("AESTHETICIAN", "ADMIN")
                         .requestMatchers("/api/staff/**")
                         .hasAnyRole("AESTHETICIAN", "ADMIN")
                         .requestMatchers("/appointments/**", "/treatments/**")
