@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Νέο ραντεβού | Beauty Clinic</title>
+
+    <link rel="stylesheet" href="/css/staff-appointment-form.css">
+    <script src="/js/staff-appointment-form.js" defer></script>
+</head>
+
+<body>
+
+<main class="page-shell">
+    <a class="back-link" href="/staff-appointments.html">← Πίσω στα ραντεβού</a>
+
+    <section class="form-card" aria-labelledby="form-title">
+        <p class="eyebrow">Beauty Clinic · Staff</p>
+        <h1 id="form-title">Νέο ραντεβού</h1>
+        <p class="intro">Συμπλήρωσε τα στοιχεία για το νέο ραντεβού.</p>
+
+        <p id="error-message" class="message is-error" aria-live="polite" hidden></p>
+        <p id="success-message" class="message is-success" aria-live="polite" hidden></p>
+
+        <form id="appointment-form">
+            <div class="form-field">
+                <label for="customer-id">Πελάτης</label>
+                <select id="customer-id" name="customerId" required>
+                    <option value="">Φόρτωση πελατών...</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="treatment-id">Θεραπεία</label>
+                <select id="treatment-id" name="treatmentId" required>
+                    <option value="">Φόρτωση θεραπειών...</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="appointment-date">Ημερομηνία</label>
+                <input id="appointment-date"
+                       name="appointmentDate"
+                       type="date"
+                       required>
+            </div>
+
+            <div class="time-fields">
+                <div class="form-field">
+                    <label for="start-time">Ώρα έναρξης</label>
+                    <select id="start-time" name="startTime" required>
+                        <option value="">Επίλεξε ώρα</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="end-time">Ώρα λήξης</label>
+                    <input id="end-time"
+                           name="endTime"
+                           type="time"
+                           readonly
+                           required>
+                </div>
+            </div>
+
+            <button class="submit-button" type="submit">Δημιουργία ραντεβού</button>
+        </form>
+
+    </section>
+</main>
+
+</body>
+</html>

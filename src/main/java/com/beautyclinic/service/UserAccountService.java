@@ -2,6 +2,7 @@ package com.beautyclinic.service;
 
 import com.beautyclinic.core.exception.EmailAlreadyExistsException;
 import com.beautyclinic.core.exception.PasswordMismatchException;
+import com.beautyclinic.dto.CustomerOptionDto;
 import com.beautyclinic.dto.UserRegistrationDto;
 import com.beautyclinic.mapper.UserAccountMapper;
 import com.beautyclinic.model.Role;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,22 @@ public class UserAccountService {
 
 
         return userAccountRepository.save(userAccount);
+    }
+
+    public List<CustomerOptionDto> getActiveCustomers() {
+        return userAccountRepository
+                .findByRoleAndActiveTrueOrderByFullNameAsc(Role.CUSTOMER)
+                .stream()
+                .map(this::toCustomerOptionDto)
+                .toList();
+    }
+
+    private CustomerOptionDto toCustomerOptionDto(UserAccount customer) {
+        return new CustomerOptionDto(
+                customer.getId(),
+                customer.getFullName(),
+                customer.getEmail()
+        );
     }
 
 }
