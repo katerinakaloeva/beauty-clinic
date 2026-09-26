@@ -18,10 +18,11 @@ public class TreatmentService {
     private final TreatmentMapper treatmentMapper;
 
 
-    public Treatment createTreatment(TreatmentCreateDto dto) {
+    public TreatmentReadDto  createTreatment(TreatmentCreateDto dto) {
         Treatment treatment = treatmentMapper.toEntity(dto);
-        return treatmentRepository.save(treatment);
-    }
+        Treatment savedTreatment = treatmentRepository.save(treatment);
+
+        return treatmentMapper.toReadDto(savedTreatment);    }
 
     public List<TreatmentReadDto> getAllTreatments() {
 
@@ -37,15 +38,19 @@ public class TreatmentService {
                 .toList();
     }
 
-    public void updateTreatment(Long id, TreatmentCreateDto dto) {
-
+    public TreatmentReadDto updateTreatment(
+            Long id,
+            TreatmentCreateDto dto
+    ) {
         Treatment treatment = treatmentRepository.findById(id)
                 .orElseThrow(() ->
-                    new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
+                        new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         treatmentMapper.updateEntity(dto, treatment);
 
-        treatmentRepository.save(treatment);
+        Treatment savedTreatment = treatmentRepository.save(treatment);
+
+        return treatmentMapper.toReadDto(savedTreatment);
     }
 
     public TreatmentReadDto getTreatmentById(Long id) {
@@ -64,5 +69,29 @@ public class TreatmentService {
                     new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
 
         treatmentRepository.delete(treatment);
+    }
+
+    public TreatmentReadDto deactivateTreatment(Long id) {
+        Treatment treatment = treatmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
+
+        treatment.setActive(false);
+
+        Treatment savedTreatment = treatmentRepository.save(treatment);
+
+        return treatmentMapper.toReadDto(savedTreatment);
+    }
+
+    public TreatmentReadDto activateTreatment(Long id) {
+        Treatment treatment = treatmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new TreatmentNotFoundException("Η θεραπεία δεν βρέθηκε"));
+
+        treatment.setActive(true);
+
+        Treatment savedTreatment = treatmentRepository.save(treatment);
+
+        return treatmentMapper.toReadDto(savedTreatment);
     }
 }

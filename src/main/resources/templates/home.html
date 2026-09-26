@@ -46,7 +46,7 @@
 
             <a class="home-card"
                th:unless="${isStaff}"
-               th:href="@{/bookings/new}">
+               th:href="@{/booking.html}">
                 <div class="home-card-icon">◷</div>
 
                 <div>
@@ -80,6 +80,19 @@
                     <h2>Όλα τα ραντεβού</h2>
                     <p>
                         Δες το πρόγραμμα και την κατάσταση όλων των ραντεβού.
+                    </p>
+                </div>
+            </a>
+
+            <a class="home-card"
+               th:if="${isStaff}"
+               th:href="@{/staff-treatments.html}">
+                <div class="home-card-icon">✦</div>
+
+                <div>
+                    <h2>Διαχείριση θεραπειών</h2>
+                    <p>
+                        Πρόσθεσε, επεξεργάσου ή άλλαξε τη διαθεσιμότητα μιας θεραπείας.
                     </p>
                 </div>
             </a>
