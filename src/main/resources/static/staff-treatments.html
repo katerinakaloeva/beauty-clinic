@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Διαχείριση θεραπειών | Beauty Clinic</title>
+
+    <link rel="stylesheet" href="/css/staff-treatments.css">
+    <script src="/js/staff-treatments.js" defer></script>
+</head>
+
+<body>
+
+<main class="page-shell">
+    <a class="back-link" href="/home">← Πίσω στην αρχική</a>
+
+    <section class="page-card" aria-labelledby="page-title">
+        <div class="title-row">
+            <div>
+                <p class="eyebrow">Beauty Clinic · Staff</p>
+                <h1 id="page-title">Διαχείριση θεραπειών</h1>
+            </div>
+            <span class="staff-badge">Υπηρεσίες</span>
+        </div>
+
+        <p class="intro">
+            Πρόσθεσε, επεξεργάσου ή απενεργοποίησε τις διαθέσιμες θεραπείες.
+        </p>
+
+        <p id="error-message" class="message is-error" aria-live="polite" hidden></p>
+        <p id="success-message" class="message is-success" aria-live="polite" hidden></p>
+
+        <section class="form-section" aria-labelledby="form-title">
+            <div class="section-heading">
+                <h2 id="form-title">Νέα θεραπεία</h2>
+                <button id="cancel-edit-button" class="text-button" type="button" hidden>
+                    Ακύρωση επεξεργασίας
+                </button>
+            </div>
+
+            <form id="treatment-form">
+                <div class="form-field">
+                    <label for="treatment-name">Όνομα θεραπείας</label>
+                    <input id="treatment-name" name="name" type="text" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="duration-minutes">Διάρκεια (λεπτά)</label>
+                        <input id="duration-minutes"
+                               name="durationMinutes"
+                               type="number"
+                               min="1"
+                               required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="treatment-price">Τιμή (€)</label>
+                        <input id="treatment-price"
+                               name="price"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               required>
+                    </div>
+                </div>
+
+                <label class="checkbox-field" for="treatment-active">
+                    <input id="treatment-active" name="active" type="checkbox" checked>
+                    <span>Η θεραπεία είναι διαθέσιμη για κράτηση</span>
+                </label>
+
+                <button id="submit-button" class="submit-button" type="submit">
+                    Προσθήκη θεραπείας
+                </button>
+            </form>
+        </section>
+
+        <section class="list-section" aria-labelledby="treatments-title">
+            <div class="section-heading">
+                <h2 id="treatments-title">Όλες οι θεραπείες</h2>
+                <span id="treatment-count" class="count-badge">0</span>
+            </div>
+
+            <p id="loading-message" class="message" aria-live="polite">
+                Φόρτωση θεραπειών...
+            </p>
+
+            <section id="empty-state" class="empty-state" hidden>
+                <div class="empty-icon" aria-hidden="true">✦</div>
+                <h3>Δεν υπάρχουν θεραπείες</h3>
+                <p>Πρόσθεσε την πρώτη θεραπεία από τη φόρμα.</p>
+            </section>
+
+            <div id="treatments" class="treatments-list" aria-live="polite"></div>
+        </section>
+    </section>
+</main>
+
+</body>
+</html>
